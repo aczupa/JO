@@ -1,0 +1,106 @@
+﻿@page "/offers-table"
+@using JO.Models
+@using JO.Services
+
+
+@if (Offers != null)
+{
+    <Card>
+        <div class="table-responsive">
+            <table class="table table-borderless mb-0">
+                <tbody>
+                    @foreach (var offer in Offers)
+                    {
+                        <tr class="shadow-lg m-1 offer-row mb-5">
+                            <td class="centered-cell"><img class="round-image" width="60" src="@offer.ImageUrl" /></td>
+                            <td>
+                                <div class="pt-2">
+                                    <div class="offer-name centered-subdiv">@offer.Name</div>
+                                    <div class="offer-position centered-subdiv">@offer.Description</div>
+                                </div>
+                            </td>
+                            <td class="centered-cell offer-chiffres">$@offer.Price</td>
+                            <td class="centered-cell offer-chiffres">@offer.TicketCount</td>
+                            <td class="centered-cell">
+                                <TableButton OnClickCallback="@(() => NavigateToOfferDetail(offer.Id))" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </Card>
+}
+
+@code {
+    [Inject] private IOfferService OfferService { get; set; }
+    [Inject] private NavigationManager NavigationManager { get; set; }
+
+    private List<Offer>? Offers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await OfferService.GetOffers();
+        Offers = response.Offers;
+    }
+
+    private void NavigateToOfferDetail(int offerId)
+    {
+        
+        NavigationManager.NavigateTo($"/offer/{offerId}");
+    }
+
+   
+}
+
+<style>
+    html,
+    body,
+    .intro {
+        height: 100%;
+    }
+
+    table td,
+    table th {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .table {
+        border-spacing: 0 20px;
+    }
+
+    .card {
+        border-radius: .5rem;
+    }
+
+    .round-image {
+        border-radius: 50%;
+    }
+
+    .offer-name {
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .offer-chiffres {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .centered-cell {
+        height: 80px;
+        width: 160px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .centered-subdiv {
+        height: 25px;
+        vertical-align: middle;
+    }
+
+  
+   
+</style>

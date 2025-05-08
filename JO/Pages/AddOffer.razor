@@ -1,0 +1,61 @@
+﻿@page "/add-offer"
+@using JO.Models
+@using JO.Models.DTOs
+@using JO.Services
+
+        <Card>
+            <div class="row user-detail-row">
+                <h3>Add New Offer</h3>
+                <div class="form-group">
+                    <EditForm Model="@addOfferForm" OnValidSubmit="AddNewOffer">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <p>
+                            <div class="form-floating mb-3">
+                                <InputText class="form-control" id="floatingInput" placeholder="Name here" @bind-Value="addOfferForm.Name" />
+                        <label for="floatingInput">Name</label>
+                    </div>
+
+                        <div class="form-floating mb-3">
+                            <InputTextArea class="form-control" id="floatingDescription" placeholder="Enter description" @bind-Value="addOfferForm.Description" />
+                            <label for="floatingDescription">Description</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <InputNumber class="form-control" id="floatingPrice" placeholder="Enter price" @bind-Value="addOfferForm.Price" />
+                            <label for="floatingPrice">Price</label>
+                        </div>
+                           
+                            <div class="form-floating mb-3">
+                                <InputNumber class="form-control" id="floatingInput" placeholder="Ticket count here" @bind-Value="addOfferForm.TicketCount" />
+                                <label for="floatingInput">Ticket Count</label>
+                            </div>
+                           
+                     
+                            <div class="form-floating mb-3">
+                                <InputText class="form-control" id="floatingInput" placeholder="Img here" @bind-Value="addOfferForm.ImageUrl" />
+                                <label for="floatingInput">Image Url</label>
+                            </div>
+                        </p>
+                        <button class="btn btn-outline-secondary" type="submit">Submit</button>
+                    </EditForm>
+                </div>
+            </div>
+        </Card>
+
+      
+  
+
+@code {
+    [Inject] private IOfferService OfferService { get; set; }
+    [Inject] private NavigationManager NavigationManager { get; set; }
+
+    private AddOfferForm addOfferForm = new();
+
+    private async Task AddNewOffer()
+    {
+        var response = await OfferService.AddOffer(addOfferForm);
+        NavigationManager.NavigateTo($"/offers-table");
+    }
+  }
+

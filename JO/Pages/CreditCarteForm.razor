@@ -1,0 +1,70 @@
+﻿@page "/creditcard"
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavigationManager
+
+<Card>
+
+<h3 class="mt-4 mb-3 text-center">Informations de la carte bancaire</h3>
+
+<EditForm Model="@cardInfo" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="cardNumber" class="form-label">Numéro de carte</label>
+        <InputText id="cardNumber" class="form-control" @bind-Value="cardInfo.CardNumber" />
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="expiryDate" class="form-label">Date d'expiration (MM/AA)</label>
+            <InputText id="expiryDate" class="form-control" @bind-Value="cardInfo.ExpiryDate" />
+        </div>
+        <div class="col-md-6">
+            <label for="cvv" class="form-label">CVV</label>
+            <InputText id="cvv" class="form-control" @bind-Value="cardInfo.CVV" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="cardHolder" class="form-label">Nom du titulaire</label>
+        <InputText id="cardHolder" class="form-control" @bind-Value="cardInfo.CardHolder" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Valider le paiement</button>
+</EditForm>
+
+</Card>
+
+@code {
+    private CreditCardInfo cardInfo = new();
+
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine("Informations de la carte:");
+        Console.WriteLine($"Numéro: {cardInfo.CardNumber}");
+        Console.WriteLine($"Date d'expiration: {cardInfo.ExpiryDate}");
+        Console.WriteLine($"CVV: {cardInfo.CVV}");
+        Console.WriteLine($"Titulaire: {cardInfo.CardHolder}");
+
+        NavigationManager.NavigateTo("/confirmation");
+    }
+
+    public class CreditCardInfo
+    {
+        [Required(ErrorMessage = "Le numéro de carte est requis.")]
+        [CreditCard(ErrorMessage = "Numéro de carte invalide.")]
+        public string CardNumber { get; set; }
+
+        [Required(ErrorMessage = "La date d'expiration est requise.")]
+        [RegularExpression(@"^(0[1-9]|1[0-2])\/?([0-9]{2})$", ErrorMessage = "Format invalide. Utilisez MM/AA.")]
+        public string ExpiryDate { get; set; }
+
+        [Required(ErrorMessage = "Le CVV est requis.")]
+        [RegularExpression(@"^\d{3,4}$", ErrorMessage = "CVV invalide.")]
+        public string CVV { get; set; }
+
+        [Required(ErrorMessage = "Le nom du titulaire est requis.")]
+        public string CardHolder { get; set; }
+    }
+}

@@ -1,0 +1,128 @@
+﻿@page "/offres"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@using JO.Models
+@using JO.Services
+
+@inject IOfferService OfferService
+@inject ICartService CartService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="text-center flex-grow-1">Choisissez votre offre</h1>
+
+        @if (IsLoggedIn)
+        {
+            <a href="#" @onclick="GoToCart" class="btn btn-primary rounded-pill px-4 py-2 d-flex align-items-center shadow-lg">
+                <span class="oi oi-cart me-2"></span>
+                <span>@CartItemCount</span>
+                <span class="ms-2">Panier</span>
+            </a>
+
+        }
+    </div>
+
+    <p class="text-center text-muted">Réservez vos billets pour les Jeux Olympiques</p>
+
+    <div class="row gy-4">
+        @if (Offers != null && Offers.Any())
+        {
+            @foreach (var offer in Offers)
+            {
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <img src="@offer.ImageUrl" class="card-img-top fixed-img" alt="@offer.Name">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@offer.Name</h5>
+                            <p class="card-text">@offer.Description</p>
+                            <p class="fw-bold">Prix: @offer.Price€</p>
+                            <button class="btn btn-primary" @onclick="() => AddToCart(offer, 1)">Ajouter au panier</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-center">Chargement des offres...</p>
+        }
+    </div>
+</div>
+
+<style>
+    .fixed-img {
+        width: 100%;
+        height: 270px;
+        object-fit: cover;
+    }
+</style>
+
+@code {
+    private List<Offer> Offers = new();
+    private bool IsLoggedIn = false;
+    private int CartItemCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await OfferService.GetOffers();
+        if (response?.Offers != null)
+        {
+            Offers = response.Offers;
+        }
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        IsLoggedIn = authState.User.Identity?.IsAuthenticated ?? false;
+
+        if (IsLoggedIn)
+        {
+            var userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                CartItemCount = await CartService.GetCartItemCount(userId); 
+            }
+        }
+    }
+
+    private async Task AddToCart(Offer offer, int quantity)
+    {
+        try
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (!user.Identity.IsAuthenticated)
+            {
+                
+                Navigation.NavigateTo($"/Identity/Account/Login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}&message=login-required", true);
+                return;
+            }
+
+            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "guest-user";
+
+            var response = await CartService.AddOfferToCart(userId, offer.Id, quantity);
+
+            if (response.Success)
+            {
+                Console.WriteLine($"Offer {offer.Name} added to the cart!");
+
+                
+                CartItemCount = await CartService.GetCartItemCount(userId);
+            }
+            else
+            {
+                Console.WriteLine($"Failed to add offer to cart: {response.Message}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding offer to cart: {ex.Message}");
+        }
+    }
+
+    private void GoToCart()
+    {
+        Navigation.NavigateTo("/cart");
+    }
+}

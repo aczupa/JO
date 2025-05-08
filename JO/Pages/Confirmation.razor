@@ -1,0 +1,108 @@
+﻿@page "/confirmation"
+@using System.Security.Claims
+@using JO.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IQRCodeService QRCodeService
+@inject JO.Data.DataContext DbContext
+@inject IEmailService EmailService
+@inject ICartService CartService
+
+
+<Card>
+    <h3 class="mt-4 mb-3 text-center">Confirmation de votre commande</h3>
+
+    @if (isLoading)
+    {
+        <p>Chargement des informations...</p>
+    }
+    else
+    {
+        <div class="alert alert-success text-center">
+            <h5>Merci pour votre commande, @fullName !</h5>
+            <p>Votre paiement a été accepté.</p>
+            <p>Votre e-ticket a été envoyé à votre adresse e-mail.</p>
+        </div>
+    }
+</Card>
+
+@code {
+    private string? fullName;
+    private string? userEmail;
+    private bool isLoading = true;
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            userEmail = user.FindFirst(ClaimTypes.Email)?.Value ?? "utilisateur inconnu";
+            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+              
+                var orderResponse = await CartService.PlaceOrderAndClearCart(userId);
+                if (!orderResponse.Success)
+                {
+                    fullName = "Erreur lors du traitement de la commande.";
+                    isLoading = false;
+                    return;
+                }
+
+                
+                var userProfile = await DbContext.UserProfile
+                    .FirstOrDefaultAsync(up => up.UserId == userId);
+
+                if (userProfile != null)
+                {
+                    fullName = $"{userProfile.FirstName} {userProfile.LastName}";
+
+                    var qrData = $"Utilisateur: {fullName}, Profil ID: {userProfile.Id}";
+                    var (qrBase64, qrBytes) = QRCodeService.GenerateQRCodeWithBytes(qrData);
+
+                   
+                    var qrCode = new QRCodeModel
+                        {
+                            UserProfileId = userProfile.Id,
+                            QRCodeBase64 = qrBase64
+                        };
+                    DbContext.QRCodeModels.Add(qrCode);
+                    await DbContext.SaveChangesAsync();
+
+                    
+                    var emailBody = $@"
+                    <p>Bonjour {fullName},</p>
+                    <p>Merci pour votre commande. Voici votre billet électronique :</p>
+                    <img src='{qrBase64}' alt='QR Code' style='width:200px;height:200px;'/>
+                    <p>Si votre boîte mail n'affiche pas correctement le QRCode, le billet est également en pièce jointe, prêt à télécharger sur votre appareil.</p>
+                    <p>À bientôt aux Jeux Olympiques !</p>
+                ";
+
+                    await EmailService.SendEmailWithAttachmentAsync(
+                        userEmail,
+                        "Votre billet QR - Confirmation de commande",
+                        emailBody,
+                        qrBytes,
+                        "billet-olympique.png",
+                        "jeuxolympliques@gmail.com",
+                        "Paris 2024 - Billetterie"
+                    );
+                }
+                else
+                {
+                    fullName = "utilisateur inconnu";
+                }
+            }
+        }
+        else
+        {
+            fullName = "invité";
+        }
+
+        isLoading = false;
+    }
+
+}

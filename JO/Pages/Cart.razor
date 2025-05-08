@@ -1,0 +1,150 @@
+﻿@page "/cart"
+@using System.Security.Claims
+@using JO.Models
+@using JO.Services
+@inject ICartService CartService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<Card>
+    <h2 class="mt-4 mb-3 text-center">Votre panier</h2>
+
+    @if (CartItems == null)
+    {
+        <div class="text-center">
+            <p>Chargement du panier...</p>
+        </div>
+    }
+    else if (!CartItems.Any())
+    {
+        <div class="alert alert-info text-center">Votre panier est vide.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Offre</th>
+                        <th>Quantité</th>
+                        <th>Prix unitaire</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in CartItems)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@item.Offer.ImageUrl" alt="@item.Offer.Name" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;" />
+                                @item.Offer.Name
+                            </td>
+                            <td>
+                                <input type="number"
+                                       class="form-control"
+                                       style="width: 70px;"
+                                       @bind="item.Qty"
+                                       @bind:event="oninput"
+                                       @onchange="(e) => UpdateQuantity(item.Offer.Id, item.Qty)"
+                                       min="1" />
+                            </td>
+                            <td>@item.Offer.Price€</td>
+                            <td>@(item.Qty * item.Offer.Price)€</td>
+                            <td>
+                                <button class="btn btn-icon" @onclick="() => RemoveFromCart(item.Offer.Id)">
+                                    <span class="oi oi-trash" style="font-size: 1.5rem;"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex flex-column flex-sm-row justify-content-between mt-3">
+            <h5>Total général : <strong>@TotalAmount€</strong></h5>
+            <div>
+                <a href="/offres" class="btn btn-secondary mb-3 mb-sm-0">Continuer ma commande</a>
+                <button class="btn btn-primary" @onclick="ProceedToCheckout">Passer la commande</button>
+            </div>
+        </div>
+    }
+    </Card>
+
+    @code {
+    public List<CartItem> CartItems { get; private set; }
+    public decimal TotalAmount { get; private set; } = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!string.IsNullOrEmpty(userId))
+        {
+            var cart = await CartService.GetCart(userId);
+
+            if (cart?.CartItems != null)
+            {
+                CartItems = cart.CartItems;
+                TotalAmount = CartItems.Sum(ci =>
+                    (ci.Offer != null ? ci.Offer.Price : 0) * ci.Qty);
+            }
+            else
+            {
+                CartItems = new List<CartItem>();
+            }
+        }
+    }
+
+    private async Task UpdateQuantity(int offerId, int newQty)
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!string.IsNullOrEmpty(userId) && newQty > 0)
+        {
+            var response = await CartService.UpdateOfferQuantity(userId, offerId, newQty);
+            if (response.Success)
+            {
+                var cart = await CartService.GetCart(userId);
+                CartItems = cart?.CartItems ?? new List<CartItem>();
+                TotalAmount = CartItems.Sum(ci => (ci.Offer != null ? ci.Offer.Price : 0) * ci.Qty);
+                StateHasChanged();
+            }
+            else
+            {
+                Console.WriteLine($"Failed to update quantity: {response.Message}");
+            }
+        }
+    }
+
+    private async Task RemoveFromCart(int offerId)
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!string.IsNullOrEmpty(userId))
+        {
+            var response = await CartService.RemoveOfferFromCart(userId, offerId);
+            if (response.Success)
+            {
+                Console.WriteLine($"Offer with ID {offerId} updated in cart!");
+                var cart = await CartService.GetCart(userId);
+                CartItems = cart?.CartItems ?? new List<CartItem>();
+                TotalAmount = CartItems.Sum(ci => (ci.Offer != null ? ci.Offer.Price : 0) * ci.Qty);
+                StateHasChanged();
+            }
+            else
+            {
+                Console.WriteLine($"Failed to update offer in cart: {response.Message}");
+            }
+        }
+    }
+
+    private void ProceedToCheckout()
+    {
+        NavigationManager.NavigateTo("/personaldata");
+    }
+}

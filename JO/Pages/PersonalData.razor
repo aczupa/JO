@@ -1,0 +1,159 @@
+﻿@page "/personaldata"
+@using System.Security.Claims
+@using System.ComponentModel.DataAnnotations
+@using JO.Services
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Authorization
+@inject UserManager<IdentityUser> UserManager
+@inject IUserProfileService UserProfileService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<Card>
+    <p class="text-center">Veuillez remplir vos informations personnelles pour continuer.</p>
+
+    <h3 class="mt-4 mb-3 text-center">Mes informations personnelles</h3>
+
+    @if (isLoading)
+    {
+        <p>Chargement...</p>
+    }
+    else
+    {
+        <EditForm Model="@checkoutInfo" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="firstName" class="form-label">Prénom</label>
+                    <InputText id="firstName" class="form-control" @bind-Value="checkoutInfo.FirstName" />
+                </div>
+                <div class="col-md-6">
+                    <label for="lastName" class="form-label">Nom</label>
+                    <InputText id="lastName" class="form-control" @bind-Value="checkoutInfo.LastName" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Adresse email</label>
+                <InputText id="email" class="form-control" @bind-Value="checkoutInfo.Email" disabled />
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-2">
+                    <label for="streetNumber" class="form-label">Numéro</label>
+                    <InputText id="streetNumber" class="form-control" @bind-Value="checkoutInfo.StreetNumber" />
+                </div>
+                <div class="col-md-6">
+                    <label for="street" class="form-label">Rue</label>
+                    <InputText id="street" class="form-control" @bind-Value="checkoutInfo.Street" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="postalCode" class="form-label">Code postal</label>
+                    <InputText id="postalCode" class="form-control" @bind-Value="checkoutInfo.PostalCode" />
+                </div>
+                <div class="col-md-4">
+                    <label for="city" class="form-label">Ville</label>
+                    <InputText id="city" class="form-control" @bind-Value="checkoutInfo.City" />
+                </div>
+                <div class="col-md-4">
+                    <label for="country" class="form-label">Pays</label>
+                    <InputText id="country" class="form-control" @bind-Value="checkoutInfo.Country" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="paymentMethod" class="form-label">Méthode de paiement</label>
+                <InputSelect id="paymentMethod" class="form-select" @bind-Value="checkoutInfo.PaymentMethod">
+                    <option value="">-- Choisir une option --</option>
+                    <option value="CreditCard">Carte bancaire</option>
+                    <option value="PayPal">PayPal</option>
+                </InputSelect>
+            </div>
+
+            <button type="submit" class="btn btn-success">Continuer</button>
+        </EditForm>
+    }
+</Card>
+
+@code {
+    private CheckoutInfo checkoutInfo = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!string.IsNullOrEmpty(userId))
+        {
+            var identityUser = await UserManager.FindByIdAsync(userId);
+            if (identityUser != null)
+            {
+                checkoutInfo.Email = identityUser.Email;
+            }
+        }
+
+        isLoading = false;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        Console.WriteLine("Formulaire validé:");
+        Console.WriteLine($"Méthode de paiement sélectionnée: {checkoutInfo.PaymentMethod}");
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!string.IsNullOrEmpty(userId))
+        {
+            // Save user profile data to the database
+            await UserProfileService.SaveUserProfile(userId, checkoutInfo);
+        }
+
+        if (checkoutInfo.PaymentMethod == "CreditCard")
+        {
+            NavigationManager.NavigateTo("/creditcard");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/confirmation");
+        }
+    }
+
+    public class CheckoutInfo
+    {
+        [Required(ErrorMessage = "Le prénom est requis.")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Le nom est requis.")]
+        public string LastName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "La rue est requise.")]
+        public string Street { get; set; }
+
+        [Required(ErrorMessage = "Le numéro est requis.")]
+        public string StreetNumber { get; set; }
+
+        [Required(ErrorMessage = "Le code postal est requis.")]
+        public string PostalCode { get; set; }
+
+        [Required(ErrorMessage = "La ville est requise.")]
+        public string City { get; set; }
+
+        [Required(ErrorMessage = "Le pays est requis.")]
+        public string Country { get; set; }
+
+        [Required(ErrorMessage = "Veuillez choisir une méthode de paiement.")]
+        public string PaymentMethod { get; set; }
+    }
+}

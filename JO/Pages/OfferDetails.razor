@@ -1,0 +1,127 @@
+﻿@page "/offer/{offerId:int}"
+@using JO.Models
+@using JO.Services
+@using JO.Models.DTOs
+@using static JO.Components.Warning
+
+@if (ShowWarning)
+{
+    <Warning OnClickCallback="DismissWarning" Type=@Warning_Type Message="@Warning_Message" />
+}
+else
+{
+<Card>
+    <div class="row user-detail-row">
+        <h3>Update Offer</h3>
+        <div class="form-group">
+            <EditForm Model="@addOfferForm" OnValidSubmit="EditOffer">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <p>
+                    <div class="form-floating mb-3">
+                        <InputText class="form-control" id="floatingInput" placeholder="Name here" @bind-Value="addOfferForm.Name" />
+                        <label for="floatingInput">Name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputText class="form-control" id="floatingInput" placeholder="Name here" @bind-Value="addOfferForm.Description" />
+                        <label for="floatingInput">Description</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputNumber class="form-control" id="floatingInput" placeholder="Price here" @bind-Value="addOfferForm.Price" />
+                        <label for="floatingInput">Price</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputNumber class="form-control" id="floatingInput" placeholder="Ticket Count here" @bind-Value="addOfferForm.TicketCount" />
+                        <label for="floatingInput">Ticket Count</label>
+                    </div>
+                    
+               
+                    <div class="form-floating mb-3">
+                        <InputText class="form-control" id="floatingInput" placeholder="Img here" @bind-Value="addOfferForm.ImageUrl" />
+                        <label for="floatingInput">Image Url</label>
+                    </div>
+                </p>
+                <button class="btn btn-primary" type="submit">Update</button>
+                <div @onclick="@ShowDeleteConfirmation" class="btn btn-danger" type="button">Delete</div>
+            </EditForm>
+        </div>
+    </div>
+</Card>
+}
+@if (ShowDeleteModal)
+{
+    <DeleteConfirmationModal>
+        <p>Are you sure you want to delete this offer?</p>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary me-1" @onclick="@DeleteOffer" type="button">Confirm</button>
+            <button class="btn btn-danger" @onclick="@CancelDelete" type="button">Cancel</button>
+        </div>
+    </DeleteConfirmationModal>
+}
+
+
+@code {
+    [Parameter] public int OfferId { get; set; }
+
+    [Inject] private IOfferService OfferService { get; set; }
+    [Inject] private NavigationManager NavigationManager { get; set; }
+
+    private AddOfferForm addOfferForm = new();
+    private bool ShowDeleteModal = false;
+    private bool ShowWarning = false;
+    private string Warning_Message = "";
+    private WarningType Warning_Type;
+
+    private Offer Offer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await OfferService.GetOffer(OfferId);
+        if (response?.Offer != null)
+        {
+            Offer = response.Offer;
+            addOfferForm = new AddOfferForm
+                {
+                    Name = Offer.Name,
+                    Description = Offer.Description,
+                    Price = Offer.Price,
+                    TicketCount = Offer.TicketCount,
+                    ImageUrl = Offer.ImageUrl
+                };
+        }
+    }
+
+
+    private async Task EditOffer()
+    {
+        Offer.Name = addOfferForm.Name;
+        Offer.Description = addOfferForm.Description;
+        Offer.Price = addOfferForm.Price;
+        Offer.TicketCount = addOfferForm.TicketCount;
+        Offer.ImageUrl = addOfferForm.ImageUrl;
+
+        var response = await OfferService.EditOffer(Offer);
+        Warning_Type = response.StatusCode == 200 ? WarningType.Success : WarningType.Error;
+        Warning_Message = response.Message;
+        ShowWarning = true;
+    }
+
+
+    private async Task DeleteOffer()
+    {
+        var response = await OfferService.DeleteOffer(Offer);
+        Warning_Type = response.StatusCode == 200 ? WarningType.Success : WarningType.Error;
+        Warning_Message = response.Message;
+        ShowDeleteModal = false;
+        ShowWarning = true;
+    }
+
+    private void ShowDeleteConfirmation() => ShowDeleteModal = true;
+    private void CancelDelete() => ShowDeleteModal = false;
+
+    private void DismissWarning()
+    {
+        ShowWarning = false;
+        NavigationManager.NavigateTo($"/offers-table");
+    }
+}
