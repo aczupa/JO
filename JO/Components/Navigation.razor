@@ -1,0 +1,107 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using JO.Services
+
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Nav
+@inject ICartService CartService
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm px-3">
+ 
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav me-auto">
+
+            <li class="nav-item">
+                <NavLink class="nav-link" href="/">
+                    <span class="oi oi-home me-1"></span> Accueil
+                </NavLink>
+            </li>
+
+            <li class="nav-item">
+                <NavLink class="nav-link" href="/offres">
+                    <span class="oi oi-tags me-1"></span> Offres
+                </NavLink>
+            </li>
+
+            @if (IsLoggedIn)
+            {
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/cart">
+                        <span class="oi oi-cart me-1"></span> Panier (@CartItemCount)
+                    </NavLink>
+                </li>
+            }
+
+            @if (IsAdmin)
+            {
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-danger fw-bold" href="#" role="button" data-bs-toggle="dropdown">
+                        Administration
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <NavLink class="dropdown-item" href="/offers-table">
+                                <span class="oi oi-list-rich me-1"></span> Tableau des offres
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink class="dropdown-item" href="/add-offer">
+                                <span class="oi oi-plus me-1"></span> Ajouter une offre
+                            </NavLink>
+                        </li>
+                    </ul>
+                </li>
+            }
+        </ul>
+
+        <ul class="navbar-nav ms-auto">
+            @if (IsLoggedIn)
+            {
+                <li class="nav-item">
+                    <button class="btn btn-outline-danger" @onclick="Logout">Se déconnecter</button>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/Identity/Account/Login">Se connecter</NavLink>
+                </li>
+            }
+        </ul>
+    </div>
+</nav>
+
+@code {
+    private bool IsLoggedIn = false;
+    private bool IsAdmin = false;
+    private int CartItemCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        IsLoggedIn = user.Identity?.IsAuthenticated ?? false;
+        IsAdmin = user.IsInRole("Admin");
+
+        if (IsLoggedIn)
+        {
+            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                CartItemCount = await CartService.GetCartItemCount(userId);
+            }
+        }
+    }
+
+    private void Logout()
+    {
+        Nav.NavigateTo("/Identity/Account/Logout", true);
+    }
+}

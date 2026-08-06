@@ -1,0 +1,16 @@
+﻿@page "/"
+
+<h1>Bienvenue dans l’application MAUI Scanner !</h1>
+
+<button @onclick="OpenScanner">Lancer le scanner QR</button>
+
+@code {
+    private async Task OpenScanner()
+    {
+        var nav = Application.Current?.MainPage?.Navigation;
+        if (nav != null)
+        {
+            await nav.PushAsync(new ScannerPage());
+        }
+    }
+}
