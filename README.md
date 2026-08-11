@@ -151,8 +151,7 @@ Create or update the `JO/appsettings.json` file with your local database connect
 
 | | |
 |---|---|
-| ![Home 1](Screenshots/1page1.jpeg) | ![Home 2](Screenshots/1page2.jpeg) |
-| ![Home 3](Screenshots/1page3.jpeg) | ![Home 4](Screenshots/1page4.jpeg) |
+| ![Home 1](Screenshots/1page1.jpeg) |
 | ![Home 5](Screenshots/1page5.jpg) | ![Olympic Ticket](Screenshots/billet-olympique.jpg) |
 
 ### Admin Panel
@@ -167,10 +166,13 @@ Create or update the `JO/appsettings.json` file with your local database connect
 ![Ticket Received by Email](Screenshots/Ticket-reçu-par-mail.jpg)
 
 ### Responsive View (Mobile)
-| | | |
-|---|---|---|
-| ![Responsive](Screenshots/Responsive.jpeg) | ![Responsive 1](Screenshots/Responsive1.jpeg) | ![Responsive 2](Screenshots/Responsive2.jpeg) |
-| ![Responsive 3](Screenshots/Responsive3.jpeg) | ![Responsive 4](Screenshots/Responsive4.jpeg) | ![Responsive 5](Screenshots/Responsive5.jpeg) |
+
+ ![Responsive](Screenshots/Responsive.jpeg) 
+ ![Responsive 1](Screenshots/Responsive1.jpeg) 
+ ![Responsive 2](Screenshots/Responsive2.jpeg) 
+ ![Responsive 3](Screenshots/Responsive3.jpeg)  
+![Responsive 4](Screenshots/Responsive4.jpeg) 
+![Responsive 5](Screenshots/Responsive5.jpeg) 
 
 ### Header
 ![H1](Screenshots/H1.jpeg)
