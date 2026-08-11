@@ -9,57 +9,91 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Navigation
 
-<div class="nav-item px-1">
-    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-        <span class="oi oi-home" aria-hidden="true"></span> Home
-    </NavLink>
-</div>
+<Navigation/>
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center">
-        <h1 class="text-center flex-grow-1 animate-fadeInUp" style="animation-delay: 0.1s;">Choisissez votre offre</h1>
+<!-- HEADER -->
+<div class="container text-center py-5 animate-fadeInUp" style="animation-delay:0.1s;">
+    <h1 class="fw-bold text-uppercase mb-3" style="letter-spacing:4px; color:#000;">
+        <span style="color:#d4af37;">Offres Premium</span>
+    </h1>
+
+    <p class="text-secondary mx-auto" style="max-width:700px;">
+        Découvrez nos offres exclusives et vivez une expérience sportive d’exception.
+    </p>
+
+    <div class="mt-4">
+        <NavLink href="/" class="btn rounded-pill px-4 py-2 fw-bold"
+                 style="background-color:#000; color:#d4af37; border:1px solid #d4af37;">
+            Retour à l’accueil
+        </NavLink>
 
         @if (IsLoggedIn)
         {
-            <a href="#" @onclick="GoToCart" class="btn btn-primary rounded-pill px-4 py-2 d-flex align-items-center shadow-lg animate-fadeInUp" style="animation-delay: 0.2s;">
-                <span class="oi oi-cart me-2"></span>
-                <span>@CartItemCount</span>
-                <span class="ms-2">Panier</span>
-            </a>
+            <button @onclick="GoToCart"
+                    class="btn rounded-pill px-4 py-2 fw-bold ms-3"
+                    style="background-color:#d4af37; color:#000;">
+                <span class="oi oi-cart me-2"></span> Panier (@CartItemCount)
+            </button>
         }
     </div>
+</div>
 
-    <p class="text-center text-muted animate-fadeInUp" style="animation-delay: 0.3s;">Réservez vos billets aujourd'hui!</p>
+<!-- OFFERS GRID -->
+<div class="container">
+    <div class="row gy-5">
 
-    <div class="row gy-4">
         @if (Offers != null && Offers.Any())
         {
             @for (int i = 0; i < Offers.Count; i++)
             {
                 var offer = Offers[i];
-                var delay = 0.4 + (i * 0.1);
+                var delay = 0.2 + (i * 0.1);
 
-                <div class="col-md-4 animate-fadeInUp" style="animation-delay: @($"{delay:0.0}s")">
-                    <div class="card shadow-sm h-100">
-                        <img src="@offer.ImageUrl" class="card-img-top fixed-img" alt="@offer.Name">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">@offer.Name</h5>
-                            <p class="card-text">@offer.Description</p>
-                            <p class="fw-bold">Prix: @offer.Price€</p>
-                            <button class="btn btn-primary" @onclick="() => AddToCart(offer, 1)">Ajouter au panier</button>
+                <div class="col-md-6 col-lg-4 animate-fadeInUp" style="animation-delay:@($"{delay:0.0}s")">
+
+                    <div class="offer-card hover-shadow rounded-4 overflow-hidden"
+                         style="background-color:#000; border:1px solid #2a2a2a;">
+
+                        <!-- IMAGE -->
+                        <div class="offer-img-container">
+                            <img src="@offer.ImageUrl"
+                                 alt="@offer.Name"
+                                 class="offer-img" />
                         </div>
+
+                        <!-- CONTENT -->
+                        <div class="p-4 text-center">
+                            <h5 class="fw-bold text-uppercase mb-2"
+                                style="color:#d4af37; letter-spacing:1px;">
+                                @offer.Name
+                            </h5>
+
+                            <p class="text-light small mb-3">
+                                @offer.Description
+                            </p>
+
+                            <p class="fw-bold mb-3" style="color:#d4af37;">
+                                Prix: @offer.Price€
+                            </p>
+
+                            <button class="btn rounded-pill px-4 py-2 fw-bold"
+                                    style="background-color:#d4af37; color:#000;"
+                                    @onclick="() => AddToCart(offer, 1)">
+                                Ajouter au panier
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             }
         }
         else
         {
-            <p class="text-center">Chargement des offres...</p>
+            <p class="text-center text-secondary">Chargement des offres...</p>
         }
+
     </div>
 </div>
-
-
 
 @code {
     private List<Offer> Offers = new();
@@ -106,12 +140,7 @@
 
             if (response.Success)
             {
-                Console.WriteLine($"Offer {offer.Name} added to the cart!");
                 CartItemCount = await CartService.GetCartItemCount(userId);
-            }
-            else
-            {
-                Console.WriteLine($"Failed to add offer to cart: {response.Message}");
             }
         }
         catch (Exception ex)

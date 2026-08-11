@@ -2,11 +2,7 @@
 @using System.ComponentModel.DataAnnotations
 @inject NavigationManager NavigationManager
 
-<div class="nav-item px-1">
-    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-        <span class="oi oi-home" aria-hidden="true"></span> Home
-    </NavLink>
-</div>
+<Navigation />
 
 <Card>
 
@@ -37,7 +33,7 @@
         <InputText id="cardHolder" class="form-control" @bind-Value="cardInfo.CardHolder" />
     </div>
 
-    <button type="submit" class="btn btn-primary">Valider le paiement</button>
+    <button type="submit" class="btn btn-gold-outline">Valider le paiement</button>
 </EditForm>
 
 </Card>

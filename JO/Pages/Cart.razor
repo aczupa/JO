@@ -6,14 +6,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 
-<nav class="navbar">
-    <div class="nav-item px-1">
-        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-            <span class="oi oi-home" aria-hidden="true"></span> Home
-        </NavLink>
-    </div>
-</nav>
-
+<Navigation />
 
 <Card>
     <h2 class="mt-4 mb-3 text-center">Votre panier</h2>
@@ -31,10 +24,10 @@
     else
     {
         <div class="table-responsive">
-            <table class="table table-bordered">
+            <table class="table table-bordered responsive-table">
                 <thead class="table-light">
                     <tr>
-                        <th>Offre</th>
+                        <th>Ticket</th>
                         <th>Quantité</th>
                         <th>Prix unitaire</th>
                         <th>Total</th>
@@ -45,24 +38,28 @@
                     @foreach (var item in CartItems)
                     {
                         <tr>
-                            <td>
-                                <img src="@item.Offer.ImageUrl" alt="@item.Offer.Name" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;" />
-                                @item.Offer.Name
+                            <td >
+                                <div class="d-flex align-items-center">
+                                    <img src="@item.Offer.ImageUrl" alt="@item.Offer.Name" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;" />
+                                    <span>@item.Offer.Name</span>
+                                </div>
                             </td>
-                            <td>
-                                <input type="number"
-                                       class="form-control"
-                                       style="width: 70px;"
-                                       @bind="item.Qty"
-                                       @bind:event="oninput"
-                                       @onchange="(e) => UpdateQuantity(item.Offer.Id, item.Qty)"
-                                       min="0" />
-
+                            <td data-label="Quantité">
+                                <div class="input-group input-group-sm ms-auto" style="max-width: 130px;">
+                                    <button class="btn btn-outline-secondary" type="button" @onclick="() => DecreaseQuantity(item)">-</button>
+                                    <input type="number"
+                                           class="form-control text-center"
+                                           @bind="item.Qty"
+                                           @bind:event="oninput"
+                                           @onchange="(e) => UpdateQuantity(item.Offer.Id, item.Qty)"
+                                           min="0" />
+                                    <button class="btn btn-outline-secondary" type="button" @onclick="() => IncreaseQuantity(item)">+</button>
+                                </div>
                             </td>
-                            <td>@item.Offer.Price€</td>
-                            <td>@(item.Qty * item.Offer.Price)€</td>
-                            <td>
-                                <button class="btn btn-icon" @onclick="() => RemoveFromCart(item.Offer.Id)">
+                            <td data-label="Prix unitaire">@item.Offer.Price€</td>
+                            <td data-label="Total">@(item.Qty* item.Offer.Price)€</td>
+                            <td data-label="Action">
+                                <button class="btn btn-icon text-danger p-0 ms-auto" @onclick="() => RemoveFromCart(item.Offer.Id)">
                                     <span class="oi oi-trash" style="font-size: 1.5rem;"></span>
                                 </button>
                             </td>
@@ -71,18 +68,19 @@
                 </tbody>
             </table>
         </div>
-
-        <div class="d-flex flex-column flex-sm-row justify-content-between mt-3">
-            <h5>Total général : <strong>@TotalAmount€</strong></h5>
-            <div>
-                <a href="/offres" class="btn btn-secondary custom-buy-btn mb-3 mb-sm-0">Continuer ma commande</a>
-                <button class="btn btn-primary" @onclick="ProceedToCheckout">Passer la commande</button>
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4 pt-3 border-top border-secondary-subtle">
+            <h5 class="cart-total-text mb-3 mb-sm-0">
+                Total général : <span class="gold-amount">@TotalAmount€</span>
+            </h5>
+            <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-sm-auto">
+                <a href="/offres" class="btn btn-gold-outline text-center">Continuer ma commande</a>
+                <button class="btn btn-gold" @onclick="ProceedToCheckout">Passer la commande</button>
             </div>
         </div>
     }
-    </Card>
+</Card>
 
-    @code {
+@code {
     public List<CartItem> CartItems { get; private set; }
     public decimal TotalAmount { get; private set; } = 0;
 
@@ -108,6 +106,25 @@
         }
     }
 
+    private async Task IncreaseQuantity(CartItem item)
+    {
+        item.Qty++;
+        await UpdateQuantity(item.Offer.Id, item.Qty);
+    }
+
+    private async Task DecreaseQuantity(CartItem item)
+    {
+        if (item.Qty > 1)
+        {
+            item.Qty--;
+            await UpdateQuantity(item.Offer.Id, item.Qty);
+        }
+        else
+        {
+            await RemoveFromCart(item.Offer.Id);
+        }
+    }
+
     private async Task UpdateQuantity(int offerId, int newQty)
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -115,7 +132,7 @@
 
         if (string.IsNullOrEmpty(userId)) return;
 
-        if (newQty == 0)
+        if (newQty <= 0)
         {
             await RemoveFromCart(offerId);
             return;
@@ -130,7 +147,6 @@
             StateHasChanged();
         }
     }
-
 
     private async Task RemoveFromCart(int offerId)
     {

@@ -4,11 +4,7 @@
 @using JO.Models.DTOs
 @using static JO.Components.Warning
 
-<div class="nav-item px-1">
-    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-        <span class="oi oi-home" aria-hidden="true"></span> Home
-    </NavLink>
-</div>
+<Navigation />
 
 @if (ShowWarning)
 {
@@ -47,7 +43,7 @@ else
                         <label for="floatingInput">Image Url</label>
                     </div>
                 </p>
-                <button class="btn btn-primary" type="submit">Update</button>
+                <button class="btn btn-gold" type="submit">Update</button>
                 <div @onclick="@ShowDeleteConfirmation" class="btn btn-danger" type="button">Delete</div>
             </EditForm>
         </div>
@@ -59,7 +55,7 @@ else
     <DeleteConfirmationModal>
         <p>Are you sure you want to delete this offer?</p>
         <div class="d-flex justify-content-end">
-            <button class="btn btn-primary me-1" @onclick="@DeleteOffer" type="button">Confirm</button>
+            <button class="btn btn-gold me-1" @onclick="@DeleteOffer" type="button">Confirm</button>
             <button class="btn btn-danger" @onclick="@CancelDelete" type="button">Cancel</button>
         </div>
     </DeleteConfirmationModal>

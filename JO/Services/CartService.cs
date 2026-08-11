@@ -9,18 +9,22 @@ namespace JO.Services
 {
     public class CartService : ICartService
     {
-        private readonly DataContext _context;
+        private readonly IDbContextFactory<DataContext> _factory;
 
-        public CartService(DataContext context)
+        public CartService(IDbContextFactory<DataContext> factory)
         {
-            _context = context;
+            _factory = factory;
         }
+
 
         public async Task<GetCartItemResponse> AddOfferToCart(string userId, int offerId, int quantity)
         {
+            await using var context = await _factory.CreateDbContextAsync();
+
             var response = new GetCartItemResponse();
 
-            var offer = await _context.Offers.FindAsync(offerId);
+            var offer = await context.Offers.FindAsync(offerId);
+
             if (offer == null)
             {
                 response.Success = false;
@@ -28,26 +32,43 @@ namespace JO.Services
                 return response;
             }
 
-            var cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId);
+
+            var cart = await context.Carts
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+
             if (cart == null)
             {
-                cart = new Cart { UserId = userId };
-                _context.Carts.Add(cart);
-                await _context.SaveChangesAsync();
+                cart = new Cart
+                {
+                    UserId = userId
+                };
+
+                context.Carts.Add(cart);
+
+                await context.SaveChangesAsync();
             }
 
-            var cartItem = await _context.CartItems
-                .FirstOrDefaultAsync(ci => ci.CartId == cart.Id && ci.OfferId == offerId);
+
+            var cartItem = await context.CartItems
+                .FirstOrDefaultAsync(ci =>
+                    ci.CartId == cart.Id &&
+                    ci.OfferId == offerId);
+
 
             int alreadyInCartQty = cartItem?.Qty ?? 0;
             int totalRequested = alreadyInCartQty + quantity;
 
+
             if (totalRequested > offer.TicketCount)
             {
                 response.Success = false;
-                response.Message = $"Vous ne pouvez pas ajouter plus de billets. Quantité disponible : {offer.TicketCount - alreadyInCartQty}";
+                response.Message =
+                    $"Vous ne pouvez pas ajouter plus de billets. Quantité disponible : {offer.TicketCount - alreadyInCartQty}";
+
                 return response;
             }
+
 
             if (cartItem != null)
             {
@@ -55,44 +76,66 @@ namespace JO.Services
             }
             else
             {
-                cartItem = new CartItem
+                context.CartItems.Add(new CartItem
                 {
                     CartId = cart.Id,
                     OfferId = offerId,
                     Qty = quantity
-                };
-                _context.CartItems.Add(cartItem);
+                });
             }
 
-            await _context.SaveChangesAsync();
+
+            await context.SaveChangesAsync();
+
 
             response.Success = true;
             response.Message = "L'offre a été ajoutée au panier.";
+
             return response;
         }
 
+
+
         public async Task<Cart> GetCart(string userId)
         {
-            return await _context.Carts
+            await using var context = await _factory.CreateDbContextAsync();
+
+
+            return await context.Carts
                 .Include(c => c.CartItems)
                     .ThenInclude(ci => ci.Offer)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
 
+
+
         public async Task<int> GetCartItemCount(string userId)
         {
-            var cart = await _context.Carts
+            await using var context = await _factory.CreateDbContextAsync();
+
+
+            var cart = await context.Carts
                 .Include(c => c.CartItems)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
+
 
             return cart?.CartItems.Sum(ci => ci.Qty) ?? 0;
         }
 
+
+
         public async Task<GetCartItemResponse> RemoveOfferFromCart(string userId, int offerId)
         {
+            await using var context = await _factory.CreateDbContextAsync();
+
+
             var response = new GetCartItemResponse();
 
-            var cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId);
+
+            var cart = await context.Carts
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+
             if (cart == null)
             {
                 response.Success = false;
@@ -100,21 +143,29 @@ namespace JO.Services
                 return response;
             }
 
-            var cartItem = await _context.CartItems
-                .FirstOrDefaultAsync(ci => ci.CartId == cart.Id && ci.OfferId == offerId);
+
+            var cartItem = await context.CartItems
+                .FirstOrDefaultAsync(ci =>
+                    ci.CartId == cart.Id &&
+                    ci.OfferId == offerId);
+
+
 
             if (cartItem != null)
             {
                 if (cartItem.Qty > 1)
                 {
-                    cartItem.Qty -= 1;
+                    cartItem.Qty--;
                 }
                 else
                 {
-                    _context.CartItems.Remove(cartItem);
+                    context.CartItems.Remove(cartItem);
                 }
 
-                await _context.SaveChangesAsync();
+
+                await context.SaveChangesAsync();
+
+
                 response.Success = true;
                 response.Message = "L'offre a été réduite de 1 ou supprimée du panier.";
             }
@@ -124,14 +175,29 @@ namespace JO.Services
                 response.Message = "L'offre n'a pas été trouvée dans le panier.";
             }
 
+
             return response;
         }
 
-        public async Task<GetCartItemResponse> UpdateOfferQuantity(string userId, int offerId, int newQty)
+
+
+
+        public async Task<GetCartItemResponse> UpdateOfferQuantity(
+            string userId,
+            int offerId,
+            int newQty)
         {
+            await using var context = await _factory.CreateDbContextAsync();
+
+
             var response = new GetCartItemResponse();
 
-            var cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId);
+
+            var cart = await context.Carts
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+
+
             if (cart == null)
             {
                 response.Success = false;
@@ -139,10 +205,20 @@ namespace JO.Services
                 return response;
             }
 
-            var cartItem = await _context.CartItems
-                .FirstOrDefaultAsync(ci => ci.CartId == cart.Id && ci.OfferId == offerId);
 
-            var offer = await _context.Offers.FirstOrDefaultAsync(o => o.Id == offerId);
+
+            var cartItem = await context.CartItems
+                .FirstOrDefaultAsync(ci =>
+                    ci.CartId == cart.Id &&
+                    ci.OfferId == offerId);
+
+
+
+            var offer = await context.Offers
+                .FirstOrDefaultAsync(o => o.Id == offerId);
+
+
+
             if (offer == null)
             {
                 response.Success = false;
@@ -150,17 +226,26 @@ namespace JO.Services
                 return response;
             }
 
+
+
             if (newQty > offer.TicketCount)
             {
                 response.Success = false;
-                response.Message = $"Vous ne pouvez pas définir cette quantité. Quantité maximale disponible : {offer.TicketCount}";
+                response.Message =
+                    $"Vous ne pouvez pas définir cette quantité. Quantité maximale disponible : {offer.TicketCount}";
+
                 return response;
             }
+
+
 
             if (cartItem != null)
             {
                 cartItem.Qty = newQty;
-                await _context.SaveChangesAsync();
+
+                await context.SaveChangesAsync();
+
+
                 response.Success = true;
                 response.Message = "La quantité a été mise à jour.";
             }
@@ -170,70 +255,96 @@ namespace JO.Services
                 response.Message = "L'offre n'a pas été trouvée dans le panier.";
             }
 
+
             return response;
         }
 
+
+
+
         public async Task<GetCartItemResponse> PlaceOrderAndClearCart(string userId)
         {
+            await using var context = await _factory.CreateDbContextAsync();
+
+
             var response = new GetCartItemResponse();
 
-            // Odłącz poprzednio śledzone encje, aby Include nie tworzył duplikatów
-            _context.ChangeTracker.Clear();
 
-            var cart = await _context.Carts
+
+            var cart = await context.Carts
                 .Include(c => c.CartItems)
                     .ThenInclude(ci => ci.Offer)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
 
+
+
             if (cart == null || !cart.CartItems.Any())
             {
                 response.Success = false;
-                response.Message = "Le panier est vide, il est impossible de passer une commande.";
+                response.Message =
+                    "Le panier est vide, il est impossible de passer une commande.";
+
                 return response;
             }
+
+
 
             var order = new Order
             {
                 UserId = userId,
                 TotalPrice = cart.TotalPrice,
                 CreatedAt = DateTime.Now,
+
                 OrderItems = cart.CartItems.Select(ci => new OrderItem
                 {
                     OfferId = ci.OfferId,
-                    Offer = ci.Offer,
                     Qty = ci.Qty,
                     Price = ci.Offer.Price
                 }).ToList()
             };
 
-            _context.Orders.Add(order);
+
+
+            context.Orders.Add(order);
+
+
 
             foreach (var item in order.OrderItems)
             {
-                var offer = await _context.Offers.FirstOrDefaultAsync(o => o.Id == item.OfferId);
+                var offer = await context.Offers
+                    .FirstOrDefaultAsync(o => o.Id == item.OfferId);
+
+
+
                 if (offer != null)
                 {
                     offer.TicketCount -= item.Qty;
-                    if (offer.TicketCount < 0)
-                        offer.TicketCount = 0;
 
-                    _context.Offers.Update(offer);
+
+                    if (offer.TicketCount < 0)
+                    {
+                        offer.TicketCount = 0;
+                    }
                 }
             }
 
-            await _context.SaveChangesAsync();
 
-            _context.CartItems.RemoveRange(cart.CartItems);
-            await _context.SaveChangesAsync();
 
-            _context.Carts.Remove(cart);
-            await _context.SaveChangesAsync();
+            context.CartItems.RemoveRange(cart.CartItems);
 
-            // Detach all tracked entities to ensure fresh queries afterwards
-            _context.ChangeTracker.Clear();
+            context.Carts.Remove(cart);
+
+
+
+            await context.SaveChangesAsync();
+
+
 
             response.Success = true;
-            response.Message = "La commande a été passée et le panier a été vidé.";
+            response.Message =
+                "La commande a été passée et le panier a été vidé.";
+
+
             return response;
         }
     }

@@ -2,182 +2,173 @@
 
 @inject NavigationManager Navigation
 
-<Navigation/>
+<Navigation />
 
-<!-- HERO SECTION -->
-<div class="container py-5 text-center animate-fadeInUp">
-    <span class="badge bg-primary-subtle text-primary text-uppercase px-3 py-2 rounded-pill fw-bold mb-3">
-        Événement Exclusif
+<!-- HERO -->
+
+<section class="container py-5 text-center">
+
+    <span class="badge text-uppercase px-3 py-2 rounded-pill fw-bold mb-3 hero-badge">
+        Événement Ultra Premium
     </span>
-    <h1 class="display-3 fw-bold tracking-tight mb-3">
-        <span class="text-primary">Summer Games 2026</span><br />
-        L’Été des Performances d’Exception
+
+    <h1 class="display-3 fw-bold mb-3 hero-title">
+        <span>Summer University Games 2027</span><br />
+        Excellence &nbsp; Élégance &nbsp; Prestige
     </h1>
-    <p class="lead text-secondary mx-auto mb-4" style="max-width: 700px;">
-        Une célébration prestigieuse du sport, de l’élégance et de l’excellence.
-        Découvrez des disciplines iconiques, des compétitions de haut niveau et des moments inoubliables.
+
+    <p class="lead mx-auto mb-4 hero-text">
+        Une édition exceptionnelle où le sport rencontre le luxe absolu.
+        Une expérience qui élève chaque discipline au rang d’art.
     </p>
-    <button class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm"
+
+    <button class="btn btn-lg rounded-pill px-4 shadow-sm hero-button"
             @onclick='() => Navigation.NavigateTo("/offres")'>
-        Explorer les offres exclusives
+        Réservez vos tickets
     </button>
 
-    
-</div>
+</section>
 
-<!-- ABOUT SECTION -->
-<div class="container my-5">
-    <div class="row align-items-center g-4">
+<!-- ABOUT -->
+
+<section class="container py-5">
+
+    <div class="row align-items-center g-5">
+
         <div class="col-lg-6 animate-fadeInUp">
-            <div class="overflow-hidden rounded-4 shadow-lg">
-                <img src="/Images/Swimming.jpg" alt="Summer Games" class="img-fluid w-100 object-fit-cover" style="max-height: 400px;">
+
+            <div class="overflow-hidden rounded-4 shadow-lg border-0 about-image">
+
+                <img src="/Images/Swimming.jpg"
+                     alt="Summer Games"
+                     class="img-fluid w-100 object-fit-cover" />
+
             </div>
+
         </div>
 
         <div class="col-lg-6 animate-fadeInUp">
+
             <div class="ps-lg-4">
-                <h2 class="fw-bold fs-1 mb-3">Un événement d’exception</h2>
-                <p class="text-secondary fs-5 mb-3">
-                    Les Summer Games 2026 vous invitent à vivre une expérience unique, où la passion du sport rencontre le raffinement d’un événement premium.
-                </p>
-                <p class="text-secondary mb-4">
-                    Chaque discipline est soigneusement mise en scène pour offrir un spectacle captivant, dans une ambiance élégante et vibrante.
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- CARDS GRID SECTION -->
-<div class="container my-5">
+                <h2 class="fw-bold fs-1 mb-3 about-title">
+                    Un événement d’exception
+                </h2>
+
+                <p class="fs-5 mb-3 about-text">
+                    Les Summer University Games 2027 adoptent une esthétique Black & Gold :
+                    noir profond, accents dorés, lignes épurées et ambiance ultra premium.
+                </p>
+
+                <p class="mb-4 about-text">
+                    Une atmosphère immersive, des disciplines iconiques,
+                    une mise en scène luxueuse et moderne.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- SPORTS -->
+
+<section class="container py-5">
+
     <div class="row g-4">
 
-        <div class="col-md-6 col-lg-4 animate-fadeInUp">
-            <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4 overflow-hidden">
-                <img src="/Images/Athletics.jpg" class="card-img-top fixed-img " alt="Athlétisme" style="height: 220px;">
-                <div class="card-body text-center p-4">
-                    <h5 class="card-title fw-bold">Athlétisme</h5>
-                    <p class="card-text text-secondary small">La vitesse, la puissance et la précision réunies dans une discipline mythique.</p>
-                </div>
-            </div>
-        </div>
+        @foreach (var item in new[]
+                {
+                ("/Images/Athletics.jpg","Athlétisme","Vitesse. Impact. Élégance sportive."),
+                ("/Images/Baseball.jpg","Baseball","Un classique revisité en version haute performance."),
+                ("/Images/Basketball.jpg","Basketball","Puissance verticale et intensité visuelle."),
+                ("/Images/box.jpg","Boxe","Force brute, précision absolue."),
+                ("/Images/Cycling.jpg","Cyclisme","Endurance et design aérodynamique."),
+                ("/Images/Football.jpg","Football","Le sport roi, en édition prestige."),
+                ("/Images/Gymnastics.jpg","Gymnastique","Fluidité, maîtrise, excellence."),
+                ("/Images/HighJump.jpg","Saut en hauteur","L’art de dépasser les limites."),
+                ("/Images/Hockey.jpg","Hockey","Vitesse glacée, intensité premium.")
+                })
+        {
+            <div class="col-md-6 col-lg-4 animate-fadeInUp">
 
-        <div class="col-md-6 col-lg-4 animate-fadeInUp">
-            <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4 overflow-hidden">
-                <img src="/Images/Baseball.jpg" class="card-img-top fixed-img" alt="Baseball" style="height: 220px;">
-                <div class="card-body text-center p-4">
-                    <h5 class="card-title fw-bold">Baseball</h5>
-                    <p class="card-text text-secondary small">Un classique américain revisité dans une ambiance estivale prestigieuse.</p>
-                </div>
-            </div>
-        </div>
+                <div class="card h-100 border-0 shadow-sm hover-shadow rounded-4 overflow-hidden sport-card">
 
-        <div class="col-md-6 col-lg-4 animate-fadeInUp">
-            <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4 overflow-hidden">
-                <img src="/Images/Basketball.jpg" class="card-img-top fixed-img" alt="Basketball" style="height: 220px;">
-                <div class="card-body text-center p-4">
-                    <h5 class="card-title fw-bold">Basketball</h5>
-                    <p class="card-text text-secondary small">Des matchs intenses où la technique rencontre le spectacle.</p>
-                </div>
-            </div>
-        </div>
+                    <img src="@item.Item1"
+                         alt="@item.Item2"
+                         class="card-img-top fixed-img sport-image" />
 
-        <div class="col-md-6 col-lg-4 animate-fadeInUp">
-            <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4 overflow-hidden">
-                <img src="/Images/box.jpg" class="card-img-top fixed-img" alt="Boxe" style="height: 220px;">
-                <div class="card-body text-center p-4">
-                    <h5 class="card-title fw-bold">Boxe</h5>
-                    <p class="card-text text-secondary small">Force, stratégie et maîtrise dans un ring électrisant.</p>
-                </div>
-            </div>
-        </div>
+                    <div class="card-body text-center p-4">
 
-        <div class="col-md-6 col-lg-4 animate-fadeInUp">
-            <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4 overflow-hidden">
-                <img src="/Images/Cycling.jpg" class="card-img-top fixed-img" alt="Cyclisme" style="height: 220px;">
-                <div class="card-body text-center p-4">
-                    <h5 class="card-title fw-bold">Cyclisme</h5>
-                    <p class="card-text text-secondary small">Des parcours exigeants pour les amateurs de vitesse et d’endurance.</p>
-                </div>
-            </div>
-        </div>
+                        <h5 class="card-title fw-bold sport-title">
+                            @item.Item2
+                        </h5>
 
-        <div class="col-md-6 col-lg-4 animate-fadeInUp">
-            <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4 overflow-hidden">
-                <img src="/Images/Football.jpg" class="card-img-top fixed-img" alt="Football" style="height: 220px;">
-                <div class="card-body text-center p-4">
-                    <h5 class="card-title fw-bold">Football</h5>
-                    <p class="card-text text-secondary small">Le sport roi dans une ambiance estivale vibrante.</p>
-                </div>
-            </div>
-        </div>
+                        <p class="card-text small sport-description">
+                            @item.Item3
+                        </p>
 
-        <div class="col-md-6 col-lg-4 animate-fadeInUp">
-            <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4 overflow-hidden">
-                <img src="/Images/Gymnastics.jpg" class="card-img-top fixed-img" alt="Gymnastique" style="height: 220px;">
-                <div class="card-body text-center p-4">
-                    <h5 class="card-title fw-bold">Gymnastique</h5>
-                    <p class="card-text text-secondary small">Grâce et performance réunies dans des chorégraphies spectaculaires.</p>
-                </div>
-            </div>
-        </div>
+                    </div>
 
-        <div class="col-md-6 col-lg-4 animate-fadeInUp">
-            <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4 overflow-hidden">
-                <img src="/Images/HighJump.jpg" class="card-img-top fixed-img" alt="Saut en hauteur" style="height: 220px;">
-                <div class="card-body text-center p-4">
-                    <h5 class="card-title fw-bold">Saut en hauteur</h5>
-                    <p class="card-text text-secondary small">Un défi aérien où chaque centimètre compte.</p>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-6 col-lg-4 animate-fadeInUp">
-            <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4 overflow-hidden">
-                <img src="/Images/Hockey.jpg" class="card-img-top fixed-img" alt="Hockey" style="height: 220px;">
-                <div class="card-body text-center p-4">
-                    <h5 class="card-title fw-bold">Hockey</h5>
-                    <p class="card-text text-secondary small">Rapidité, précision et esprit d’équipe sur la glace.</p>
-                </div>
             </div>
-        </div>
+        }
 
     </div>
-</div>
 
-<!-- FEATURES SECTION -->
-<div class="container my-5 animate-fadeInUp">
-    <div class="p-4 p-md-5 bg-light rounded-4 border-0 shadow-sm">
-        <h3 class="fw-bold mb-4 text-center text-md-start">
-            <i class="bi bi-stars text-primary me-2"></i>Pourquoi choisir les Summer Games ?
+</section>
+
+<!-- WHY CHOOSE -->
+
+<section class="container py-5">
+
+    <div class="rounded-4 p-5 bg-dark">
+
+        <h3 class="fw-bold mb-4 text-center text-md-start features-title">
+            <i class="bi bi-stars me-2"></i>
+            Pourquoi participer aux Summer University Games 2027 ?
         </h3>
-        <div class="row g-3">
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-3">
-                    <i class="bi bi-star-fill text-primary fs-5 me-3"></i>
-                    <span><strong>Événements exclusifs</strong> réservés aux participants</span>
-                </div>
-                <div class="d-flex align-items-center mb-3">
-                    <i class="bi bi-music-note-beamed text-primary fs-5 me-3"></i>
-                    <span><strong>Ambiance raffinée</strong> avec animations et musique live</span>
-                </div>
-                <div class="d-flex align-items-center mb-3">
-                    <i class="bi bi-trophy-fill text-primary fs-5 me-3"></i>
-                    <span><strong>Compétitions de haut niveau</strong> dans des espaces modernes</span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-3">
-                    <i class="bi bi-people-fill text-primary fs-5 me-3"></i>
-                    <span><strong>Activités pour tous</strong> dans un cadre sécurisé</span>
-                </div>
-                <div class="d-flex align-items-center mb-3">
-                    <i class="bi bi-cup-hot-fill text-primary fs-5 me-3"></i>
-                    <span><strong>Espaces lounge</strong> pour se détendre et profiter</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div id="offers"></div>
+        <div class="row g-3 features">
+
+            <div class="col-md-6">
+
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-mortarboard-fill fs-5 me-3 feature-icon"></i>
+                    <span><strong>Une célébration du sport universitaire</strong> réunissant étudiants et universités du monde entier.</span>
+                </div>
+
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-globe-europe-africa fs-5 me-3 feature-icon"></i>
+                    <span><strong>Une dimension internationale</strong> favorisant les échanges culturels, le respect et l'amitié.</span>
+                </div>
+
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-trophy-fill fs-5 me-3 feature-icon"></i>
+                    <span><strong>Des compétitions de haut niveau</strong> mettant en lumière les talents de la nouvelle génération.</span>
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-people-fill fs-5 me-3 feature-icon"></i>
+                    <span><strong>Une expérience ouverte à tous</strong> pour les étudiants, les familles, les supporters et le grand public.</span>
+                </div>
+
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-lightbulb-fill fs-5 me-3 feature-icon"></i>
+                    <span><strong>L'innovation et l'excellence</strong> au service du sport, de l'éducation et du développement durable.</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

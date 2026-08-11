@@ -6,19 +6,18 @@ html, body {
     font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
 }
 
-
+/* --- BLAZOR VALIDATION & ERRORS --- */
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }
 
 .invalid {
     outline: 1px solid red;
-} 
+}
 
 .validation-message {
     color: red;
-} 
-
+}
 
 #blazor-error-ui {
     background: lightyellow;
@@ -49,209 +48,64 @@ html, body {
         content: "An error has occurred.";
     }
 
-/* --- VIDEO BACKGROUND --- */
-.video-container {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
+/* --- CARD HOVER EFFECT --- */
+.hover-shadow {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-#bg-video {
+    .hover-shadow:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+/* --- IMAGE CONTAINER (nowoczesny, stabilny layout) --- */
+.card-img-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: #000; /* pasuje do Black & Gold */
+}
+
+/* --- IMAGE INSIDE CONTAINER --- */
+.card-img-custom {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
 }
 
-#video-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
+.hover-shadow:hover .card-img-custom {
+    transform: scale(1.05);
 }
 
-/* --- NAVBAR --- */
-nav.navbar {
-    position: relative;
-    z-index: 1040;
-}
-
-.navbar,
-.navbar .nav-link,
-.navbar .navbar-brand {
-    font-family: "Segoe UI", Arial, sans-serif;
-    text-transform: uppercase;
-    font-weight: 300;
-    letter-spacing: 0.5px;
-    color: rgb(7,45,79);
-}
-
-    .navbar .nav-link {
-        opacity: 0.95;
-    }
-
-        .navbar .nav-link:hover {
-            opacity: 1;
-        }
-
-    .navbar i {
-        color: rgb(7,45,79);
-    }
-
-/* --- BUTTONS --- */
-.btn-primary,
-.custom-buy-btn {
-    background-color: rgb(7,45,79);
-    border-color: rgb(7,45,79);
-    color: #fff;
-    font-family: "Segoe UI", Arial, sans-serif;
-    text-transform: uppercase;
-    font-weight: 300;
-    letter-spacing: 0.5px;
-    padding: 8px 18px;
-    font-size: 1rem;
-    border-radius: 25px;
-    width: auto;
-}
-
-    .btn-primary:hover,
-    .custom-buy-btn:hover {
-        background-color: rgba(7,45,79,0.85);
-        border-color: rgba(7,45,79,0.85);
-        color: #fff;
-    }
-.video-title {
-    position: absolute;
-    top: 50%; 
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-family: "Segoe UI", Arial, sans-serif;
-    font-size: clamp(1.2rem, 4vw, 3rem);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-align: center;
-    font-weight: 300;
-    width: 80%;
-    z-index: 1050;
-    line-height: 1.2;
-    text-shadow: 0 4px 8px rgba(0,0,0,0.6);
-}
-
-
-/* --- VIDEO NAV BAR --- */
-.video-nav-bar {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: space-around;
-    width: 90%;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 0.5rem 1rem;
-    border-radius: 30px;
-    z-index: 1050;
-    margin-top: 5rem;
-}
-
-.video-nav-link {
-    color: white;
-    font-family: "Segoe UI", Arial, sans-serif;
-    font-weight: 300;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 1rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    padding: 0.3rem 0.8rem;
-}
-
-    .video-nav-link:hover {
-        color: #f0c040;
-        background-color: rgba(255, 255, 255, 0.15);
-        border-radius: 20px;
-        transform: scale(1.05);
-    }
-
-
-@media (max-width: 768px) {
-    .video-nav-bar {
-        position: static;
-        transform: none;
-        margin: 1rem auto 0 auto;
-        width: 95%;
-        border-radius: 15px;
-    }
-
-    .video-nav-link {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.5rem;
-    }
-
-    .video-grid-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 576px) {
-    .video-title {
-        font-size: clamp(0.9rem, 6vw, 1.8rem);
-        top: 5%;
-        letter-spacing: 1px;
-        width: 95%;
-        padding: 0 10px;
-    }
-}
-
-/* --- VIDEO GRID --- */
-.video-grid-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, auto);
-    gap: 20px;
-    padding: 40px 20px;
-    background-color: #f5f5f5;
-}
-
-.video-grid-item {
-    background-color: white;
-    border-radius: 12px;
-    padding: 10px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    scroll-margin-top: 100px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-    .video-grid-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    }
-
-    .video-grid-item img {
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 8px;
-        margin-bottom: 10px;
-    }
-
-    .video-grid-item h3 {
-        margin: 0;
-        font-size: 1.1rem;
-    }
-
-
+/* --- FIXED IMG (dla kart w gridzie) --- */
 .fixed-img {
     width: 100%;
-    height: 270px;
+    aspect-ratio: 16 / 9;
     object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.35s ease;
 }
 
+.fixed-img2 {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.hover-shadow:hover .fixed-img {
+    transform: scale(1.06);
+}
+
+/* --- CARD --- */
 .card {
+    overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -264,6 +118,92 @@ nav.navbar {
             animation: pulse 1s infinite;
         }
 
+/* --- HERO SECTION --- */
+.hero-badge {
+    background-color: #000;
+    color: #d4af37;
+    border: 1px solid #d4af37;
+    letter-spacing: 1px;
+}
+
+.hero-title {
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #000;
+}
+
+    .hero-title span {
+        color: #d4af37;
+    }
+
+.hero-text {
+    max-width: 700px;
+    color: #4a4a4a;
+}
+
+.hero-button {
+    background-color: #d4af37;
+    border: none;
+    color: #000;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* --- ABOUT SECTION --- */
+.about-image {
+    background-color: #000;
+}
+
+    .about-image img {
+        max-height: 400px;
+    }
+
+.about-title {
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.about-text {
+    color: #4a4a4a;
+}
+
+/* --- SPORTS CARDS --- */
+.sport-card {
+    background-color: #000;
+    border: 1px solid #2a2a2a;
+}
+
+.sport-image {
+    height: 220px;
+}
+
+.sport-title {
+    color: #d4af37;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sport-description {
+    color: #cfcfcf;
+}
+
+/* --- FEATURES SECTION --- */
+.features-title {
+    color: #d4af37;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.features {
+    color: #e5e5e5;
+}
+
+.feature-icon {
+    color: #d4af37;
+}
+
+/* --- ANIMATIONS --- */
 .animate-fadeInUp {
     animation: fadeInUp 1s ease-in-out both;
 }
@@ -294,251 +234,160 @@ nav.navbar {
     }
 }
 
-/* --- VIDEO CONTAINER FLEX --- */
-.video-container {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* pionowe wyśrodkowanie */
-    align-items: center; /* poziome wyśrodkowanie */
-    text-align: center;
-}
-
-/* --- VIDEO BACKGROUND --- */
-#bg-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto; /* zamiast 100% */
-    object-fit: cover;
-    z-index: 0;
-    aspect-ratio: 16 / 9; /* wymusza proporcje */
-}
-#bg-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-@media (max-width: 768px) {
-    #bg-video {
-        height: auto; /* nie rozciąga w pionie */
-        aspect-ratio: 16 / 9; /* zachowuje proporcje */
+/* --- RESPONSIVE TABLE FOR CART (MOBILNY KOSZYK) --- */
+@media (max-width: 767.98px) {
+    .responsive-table thead {
+        display: none;
     }
 
-    .video-container {
-        height: auto; /* kontener dopasowuje się do wideo */
+    .responsive-table,
+    .responsive-table tbody,
+    .responsive-table tr,
+    .responsive-table td {
+        display: block;
+        width: 100%;
     }
+
+        .responsive-table tr {
+            margin-bottom: 1.25rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            background-color: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            padding: 0.75rem;
+        }
+
+        .responsive-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: right;
+            padding: 0.5rem 0.25rem;
+            border: none;
+            border-bottom: 1px dashed #e9ecef;
+        }
+
+            .responsive-table td:last-child {
+                border-bottom: none;
+            }
+
+            .responsive-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                text-align: left;
+                color: #495057;
+                margin-right: 1rem;
+            }
 }
 
 
+/* --- BLACK & GOLD CART SUMMARY & BUTTONS --- */
 
-#video-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.3); /* lekki overlay dla czytelności */
-    z-index: 1;
-    pointer-events: none;
+.cart-total-text {
+    font-size: 1.25rem;
+    color: #000000;
+    letter-spacing: 0.5px;
+}
+
+.gold-amount {
+    color: #d4af37;
+    font-weight: 700;
+    font-size: 1.4rem;
 }
 
 
-
-
-/* --- VIDEO NAV BAR --- */
-.video-nav-bar {
-    position: relative; /* zamiast absolute */
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 0.5rem 1rem;
-    border-radius: 30px;
-    z-index: 2;
-}
-
-/* --- VIDEO NAV LINKS --- */
-.video-nav-link {
-    color: white;
-    font-family: "Segoe UI", Arial, sans-serif;
-    font-weight: 300;
+.btn-gold {
+    background-color: #000000;
+    color: #d4af37;
+    border: 1px solid #d4af37;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-size: 1rem;
+    padding: 0.6rem 1.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+    .btn-gold:hover {
+        background-color: #d4af37;
+        color: #000000;
+        border-color: #d4af37;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+    }
+
+
+.btn-gold-outline {
+    background-color: transparent;
+    color: #000000;
+    border: 1px solid #000000;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.6rem 1.5rem;
+    border-radius: 0.375rem;
     text-decoration: none;
     transition: all 0.3s ease;
-    padding: 0.3rem 0.8rem;
 }
 
-    .video-nav-link:hover {
-        color: #f0c040;
-        background-color: rgba(255, 255, 255, 0.15);
-        border-radius: 20px;
-        transform: scale(1.05);
+    .btn-gold-outline:hover {
+        background-color: #000000;
+        color: #d4af37;
+        border-color: #000000;
+        transform: translateY(-2px);
     }
 
-/* --- RESPONSIVE --- */
-@media (max-width: 768px) {
-    .video-title {
-        font-size: clamp(1rem, 5vw, 2.2rem);
-        margin-bottom: 0.5rem;
-    }
+/* --- BLACK & GOLD EDIT BUTTON & TABLE STYLES --- */
 
-    .video-nav-bar {
-        flex-direction: column;
-        border-radius: 15px;
-        width: 95%;
-    }
-
-    .video-nav-link {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.5rem;
-    }
-}
-@media (max-width: 768px) {
-    .video-container {
-        height: auto; /* kontener dopasowuje się do wideo */
-    }
-
-    #bg-video {
-        height: auto;
-        aspect-ratio: 16 / 9; /* zachowuje proporcje */
-    }
-
-
-    .video-nav-bar {
-        position: static; /* wychodzi z overlay */
-        transform: none;
-        margin: 1rem auto 0 auto; /* odstęp pod wideo */
-        width: 95%;
-        border-radius: 15px;
-        flex-direction: column;
-    }
-
-    .video-nav-link {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.5rem;
-    }
-}
-/* Desktop: nav-bar jako overlay */
-.video-nav-bar {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: space-around;
-    width: 90%;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 0.5rem 1rem;
-    border-radius: 30px;
-    z-index: 1050;
+.text-gold {
+    color: #d4af37 !important;
 }
 
-/* Mobile: nav-bar pod wideo */
-@media (max-width: 768px) {
-    .video-nav-bar {
-        position: static; /* normalny flow */
-        transform: none;
-        margin: 1rem auto; /* odstęp od wideo */
-        width: 95%;
-        border-radius: 15px;
-        flex-direction: column;
-    }
-}
-
-/* Desktop: pełne tło */
-.video-container {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-}
-
-#bg-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
-}
-
-/* Mobile: prostokątne wideo pod treścią */
-@media (max-width: 768px) {
-    .video-container {
-        height: auto; /* kontener dopasowuje się do wideo */
-    }
-
-    #bg-video {
-        position: relative; /* nie absolute */
-        width: 100%;
-        height: auto;
-        aspect-ratio: 16 / 9; /* zachowuje proporcje */
-        object-fit: contain; /* nie rozciąga */
-    }
-}
-@media (max-width: 768px) {
-    .video-container {
-        height: auto; /* kontener dopasowuje się do wideo */
-        background: none; /* usuń tło kontenera */
-    }
-
-    #bg-video {
-        position: relative; /* nie absolute */
-        width: 100%;
-        height: auto;
-        aspect-ratio: 16 / 9; /* zachowuje proporcje */
-        object-fit: contain; /* nie rozciąga */
-        display: block;
-    }
-
-    #video-overlay {
-        display: none; /* overlay niepotrzebny na mobile */
-    }
-}
-.video-title {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-family: "Segoe UI", Arial, sans-serif;
-    font-size: clamp(1.2rem, 4vw, 3rem);
+/* Przycisk akcji z ołówkiem */
+.btn-gold-edit {
+    background-color: #000000;
+    color: #d4af37;
+    border: 1px solid #d4af37;
+    font-size: 0.875rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    text-align: center;
-    font-weight: 300;
-    width: 80%;
-    z-index: 1050;
-    line-height: 1.2;
-    text-shadow: 0 4px 8px rgba(0,0,0,0.6);
+    letter-spacing: 0.5px;
+    padding: 0.4rem 0.9rem;
+    border-radius: 0.375rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* MOBILE: linki wyśrodkowane pod wideo */
-@media (max-width: 768px) {
-
-    .video-nav-bar {
-        justify-content: center;
-        align-items: center; /* wyśrodkowanie poziome */
-        text-align: center;
-        flex-direction: column; /* link poniżej linku */
-        gap: 0.4rem;
+    .btn-gold-edit:hover {
+        background-color: #d4af37;
+        color: #000000;
+        border-color: #d4af37;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35);
     }
 
-    .video-nav-link {
-        display: block;
-        width: 100%;
-        text-align: center; /* centralnie */
-        padding: 0.5rem 0.8rem;
+    .btn-gold-edit .oi {
+        font-size: 0.9rem;
     }
+
+/* Dostosowanie wierszy tabeli do motywu */
+.offer-row {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.offer-name {
+    color: #000000;
+    font-size: 1.05rem;
+}
+
+.round-image {
+    object-fit: cover;
+    border: 2px solid #d4af37;
 }
 

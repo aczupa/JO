@@ -1,66 +1,38 @@
-﻿.fixed-img {
-    width: 100%;
-    height: 270px;
-    object-fit: cover;
-}
-
-.card {
+﻿/* --- CARD HOVER EFFECT --- */
+.hover-shadow {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    .hover-shadow:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 1.5rem 2.5rem rgba(0, 0, 0, 0.35);
     }
 
-        
-        .card:hover .btn-primary {
-            animation: pulse 1s infinite;
-        }
-
-
-.fixed-img {
+/* --- IMAGE CONTAINER --- */
+.offer-img-container {
     width: 100%;
-    height: 270px;
-    object-fit: cover;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: #000;
 }
 
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* --- IMAGE --- */
+.offer-img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill; 
 }
 
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
 
-        .card:hover .btn-primary {
-            animation: pulse 1s infinite;
-        }
+.hover-shadow:hover .offer-img {
+    transform: scale(1.08);
+}
 
-
-
+/* --- ANIMATIONS --- */
 .animate-fadeInUp {
     animation: fadeInUp 1s ease-in-out both;
 }
 
-
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.05);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-/* Animacja fadeInUp */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -71,8 +43,4 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.animate-fadeInUp {
-    animation: fadeInUp 1s ease-in-out both;
 }
