@@ -149,30 +149,39 @@ Create or update the `JO/appsettings.json` file with your local database connect
 
 ## 📸 Screenshots
 
-| | |
-|---|---|
-| ![Home 1](Screenshots/1page1.jpeg) |
-| ![Home 5](Screenshots/1page5.jpg) | ![Olympic Ticket](Screenshots/billet-olympique.jpg) |
+<!-- HOME -->
+<h2>Home</h2>
+<div style="display:flex; gap:20px; flex-wrap:wrap;">
+  <img src="Screenshots/1page1.jpeg" width="300">
+  <img src="Screenshots/1page5.jpg" width="300">
+  
+</div>
 
-### Admin Panel
-![Admin Panel](Screenshots/Admin-panel.jpeg)
-![Admin Panel Responsive](Screenshots/Admin-panel-responsive.jpeg)
-![Delete Offer - Modal](Screenshots/Suppression-offres-modal.jpeg)
-![Update Offer](Screenshots/Update-Offer.jpeg)
+<!-- ADMIN PANEL -->
+<h2 style="margin-top:40px;">Admin Panel</h2>
+<div style="display:flex; gap:20px; flex-wrap:wrap;">
+  <img src="Screenshots/Admin-panel.jpeg" width="300">
+  <img src="Screenshots/Admin-panel-responsive.jpeg" width="300">
+  <img src="Screenshots/Suppression-offres-modal.jpeg" width="300">
+  <img src="Screenshots/Update-Offer.jpeg" width="300">
+</div>
 
-### Cart & Checkout
-![Cart](Screenshots/Panier.jpeg)
-![Confirmation](Screenshots/Confirmation.jpeg)
-![Ticket Received by Email](Screenshots/Ticket-reçu-par-mail.jpg)
+<!-- CART & CHECKOUT -->
+<h2 style="margin-top:40px;">Cart & Checkout</h2>
+<div style="display:flex; gap:20px; flex-wrap:wrap;">
+  <img src="Screenshots/Panier.jpeg" width="300">
+  <img src="Screenshots/Confirmation.jpeg" width="300">
+  <img src="Screenshots/Ticket-reçu-par-mail.jpg" width="300">
+  <img src="Screenshots/billet-olympique.jpg" width="300">
+</div>
 
-### Responsive View (Mobile)
-
- ![Responsive](Screenshots/Responsive.jpeg) 
- ![Responsive 1](Screenshots/Responsive1.jpeg) 
- ![Responsive 2](Screenshots/Responsive2.jpeg) 
- ![Responsive 3](Screenshots/Responsive3.jpeg)  
-![Responsive 4](Screenshots/Responsive4.jpeg) 
-![Responsive 5](Screenshots/Responsive5.jpeg) 
-
-### Header
-![H1](Screenshots/H1.jpeg)
+<!-- RESPONSIVE -->
+<h2 style="margin-top:40px;">Responsive View (Mobile)</h2>
+<div style="display:flex; gap:20px; flex-wrap:wrap;">
+  <img src="Screenshots/Responsive.jpeg" width="300">
+  <img src="Screenshots/Responsive1.jpeg" width="300">
+  <img src="Screenshots/Responsive2.jpeg" width="300">
+  <img src="Screenshots/Responsive3.jpeg" width="300">
+  <img src="Screenshots/Responsive4.jpeg" width="300">
+  <img src="Screenshots/Responsive5.jpeg" width="300">
+</div>
